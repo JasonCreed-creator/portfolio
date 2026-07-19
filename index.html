@@ -152,8 +152,10 @@ section { position:relative; }
 .card .proof b { color:var(--blue); font-weight:800; }
 .ic { width:46px; height:46px; margin-bottom:16px; }
 .ic path, .ic circle, .ic rect, .ic polyline { stroke:var(--blue); stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-.rv .ic [pathLength] { stroke-dasharray:1; stroke-dashoffset:1; }
-.rv.in .ic [pathLength] { stroke-dashoffset:0; transition:stroke-dashoffset 1.4s ease .35s; }
+.rv .ic path, .rv .ic circle, .rv .ic rect, .rv .ic polyline { stroke-dasharray:1; stroke-dashoffset:1; }
+.rv.in .ic path, .rv.in .ic circle, .rv.in .ic rect, .rv.in .ic polyline {
+  stroke-dashoffset:0; transition:stroke-dashoffset 1.4s ease .35s;
+}
 
 /* ---------- timeline ---------- */
 #career .tl { position:relative; margin-top:64px; padding-left:36px; }
@@ -178,6 +180,28 @@ section { position:relative; }
 .tli li { list-style:none; font-size:15px; color:var(--txt); padding-left:18px; position:relative; line-height:1.55; }
 .tli li::before { content:''; position:absolute; left:0; top:9px; width:7px; height:7px; border-radius:2px; background:var(--blue); }
 .tli.now h3 { color:var(--blue); }
+.tli.now { padding-top:8px; }
+.now-card {
+  position:relative; background:#fff; border:1.5px solid rgba(41,98,255,.5); border-radius:16px;
+  padding:26px 30px 24px; max-width:760px; box-shadow:0 18px 46px rgba(41,98,255,.15);
+}
+.now-badge {
+  position:absolute; top:-13px; left:26px; background:var(--blue); color:#fff;
+  font-size:11px; font-weight:800; letter-spacing:2.5px; padding:6px 14px; border-radius:99px;
+  box-shadow:0 6px 18px rgba(41,98,255,.4); animation:badgeglow 2.6s ease-in-out infinite;
+}
+@keyframes badgeglow { 0%,100%{box-shadow:0 6px 18px rgba(41,98,255,.35)} 50%{box-shadow:0 6px 26px rgba(41,98,255,.7)} }
+.tli.now::before {
+  width:16px; height:16px; left:-36px; top:14px; background:var(--blue);
+  border-color:#fff; box-shadow:0 0 0 4px rgba(41,98,255,.25);
+}
+.tli.now .ripple {
+  position:absolute; left:-38px; top:12px; width:20px; height:20px; border-radius:50%;
+  border:2px solid rgba(41,98,255,.55); animation:ripple 2.2s ease-out infinite; pointer-events:none;
+}
+@keyframes ripple { 0%{transform:scale(.5); opacity:1} 100%{transform:scale(2.4); opacity:0} }
+.now-card .role { color:var(--blue); font-weight:700; margin-top:4px; }
+.now-card ul { margin-top:14px; }
 
 /* ---------- counters ---------- */
 .nums { display:grid; grid-template-columns:repeat(4,1fr); gap:22px; margin-top:56px; }
@@ -208,8 +232,26 @@ section { position:relative; }
 @keyframes march { 0%,60%,100%{opacity:.15} 30%{opacity:1} }
 #pipe { margin-top:70px; }
 #pipe .pt { font-size:13px; letter-spacing:2.5px; font-weight:800; color:var(--pale); text-transform:uppercase; }
-.pipe-svg { width:100%; height:auto; margin-top:8px; display:block; }
-.pipe-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:-6px; }
+.stepper { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin:30px 0 16px; }
+.st { position:relative; display:flex; justify-content:center; }
+.st i {
+  width:40px; height:40px; border-radius:50%; border:2px solid rgba(138,180,255,.3);
+  color:#8FA6CC; display:grid; place-items:center; font-style:normal; font-size:13px; font-weight:800;
+  background:rgba(6,15,32,.6); transition:all .45s ease; position:relative; z-index:1;
+}
+.st:not(:last-child)::before, .st .fill {
+  content:''; position:absolute; top:50%; margin-top:-1px; height:2px;
+  left:calc(50% + 32px); width:calc(100% - 46px);
+}
+.st:not(:last-child)::before { background:rgba(138,180,255,.14); }
+.st .fill { background:linear-gradient(90deg, var(--blue), var(--pale)); transform:scaleX(0); transform-origin:left; transition:transform .5s ease; }
+#pipe.go .st i { border-color:var(--blue); color:#fff; background:var(--blue); box-shadow:0 0 0 5px rgba(41,98,255,.16); }
+#pipe.go .st .fill { transform:scaleX(1); }
+#pipe.go .st:nth-child(1) i { transition-delay:.1s } #pipe.go .st:nth-child(1) .fill { transition-delay:.4s }
+#pipe.go .st:nth-child(2) i { transition-delay:.8s } #pipe.go .st:nth-child(2) .fill { transition-delay:1.1s }
+#pipe.go .st:nth-child(3) i { transition-delay:1.5s } #pipe.go .st:nth-child(3) .fill { transition-delay:1.8s }
+#pipe.go .st:nth-child(4) i { transition-delay:2.2s }
+.pipe-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
 .pc { position:relative; background:rgba(255,255,255,.045); border:1px solid rgba(138,180,255,.16); border-radius:14px; padding:22px; transition:background .25s, border-color .25s, transform .25s; }
 .pc:hover { background:rgba(255,255,255,.08); border-color:rgba(138,180,255,.4); transform:translateY(-4px); }
 .pc h4 { font-size:17px; font-weight:800; }
@@ -316,12 +358,18 @@ section { position:relative; }
 .cr i { font-style:normal; font-size:15px; font-weight:800; color:var(--blue); }
 .cr p { font-size:15px; line-height:1.6; }
 .stack h3 { font-size:16px; font-weight:800; letter-spacing:1px; color:var(--navy); }
-.stk { margin-top:18px; display:grid; gap:14px; }
-.sk { display:grid; grid-template-columns:96px 1fr; gap:14px; align-items:baseline; }
-.sk i { font-style:normal; font-size:13.5px; font-weight:800; color:var(--navy); }
-.sk .tags { display:flex; flex-wrap:wrap; gap:8px; }
-.sk .tags span { background:var(--bg); border:1px solid var(--line); border-radius:99px; padding:6px 13px; font-size:13px; color:var(--txt); font-weight:600; transition:border-color .2s, color .2s; }
-.sk .tags span:hover { border-color:var(--blue); color:var(--blue); }
+.stk { margin-top:18px; display:grid; gap:12px; }
+.skc {
+  display:flex; gap:18px; align-items:flex-start; background:#fff; border:1px solid var(--line);
+  border-radius:14px; padding:18px 20px; transition:transform .22s, box-shadow .22s, border-color .22s;
+}
+.skc:hover { transform:translateX(4px); border-color:var(--blue); box-shadow:0 12px 30px rgba(41,98,255,.1); }
+.skc .ic { width:38px; height:38px; margin:2px 0 0; flex:none; }
+.skc b { font-size:15.5px; font-weight:800; color:var(--navy); }
+.skc .ev { display:block; margin-top:3px; font-size:13px; color:var(--blue); font-weight:700; line-height:1.5; }
+.skc .tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.skc .tags span { background:var(--bg); border:1px solid var(--line); border-radius:99px; padding:5px 12px; font-size:12.5px; color:var(--sub); font-weight:600; transition:border-color .2s, color .2s; }
+.skc .tags span:hover { border-color:var(--blue); color:var(--blue); }
 
 /* ---------- contact ---------- */
 #contact { background:linear-gradient(170deg,#060F20, #0A2540 60%, #0D2C55); color:#fff; overflow:hidden; }
@@ -367,7 +415,8 @@ footer a:hover { color:#fff; }
   .pc:not(:last-child)::after { right:auto; left:50%; top:auto; bottom:-17px; transform:rotate(90deg); animation:none; opacity:.7; }
   .chip-grid { grid-template-columns:repeat(2,1fr); }
   .c-grid { grid-template-columns:1fr; }
-  .pipe-svg { display:none; }
+  .stepper { display:none; }
+  .now-card { padding:22px 20px 20px; }
 }
 </style>
 </head>
@@ -420,7 +469,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 01 DIVIDER ═══ -->
 <section class="divider" id="d1">
-  <img class="dv-photo" src="assets/bg-d1.webp" alt="" loading="lazy">
+  <img class="dv-photo" src="assets/bg-d1.webp?v=2" alt="" loading="lazy">
   <div class="wrap dv-in">
     <div class="dv-txt">
       <span class="dv-kicker rv">Section 01</span>
@@ -498,15 +547,20 @@ footer a:hover { color:#fff; }
         <p>대행이 아닌 주최의 관점 확보 — 시장성 분석부터 콘셉트 · 수익모델 · 런칭까지 전 과정 총괄.</p>
       </div>
       <div class="tli now rv">
-        <span class="when">2024 – 현재</span>
-        <h3>M&amp;C커뮤니케이션즈 MICE본부 신사업실장</h3>
-        <ul>
-          <li>데이터 결합 모객 신상품 사업화 리드</li>
-          <li>300개 기업 대표 대상 서밋 기획 · 운영 총괄</li>
-          <li>글로벌 테크 12개사 컨퍼런스 시리즈 수행</li>
-          <li>MICE 패키지 표준상품화 체계 설계</li>
-          <li>견적 · RSVP · 비딩 인텔리전스 시스템 구축</li>
-        </ul>
+        <span class="ripple"></span>
+        <div class="now-card">
+          <span class="now-badge">NOW</span>
+          <span class="when">2024 – 현재</span>
+          <h3>M&amp;C커뮤니케이션즈 MICE본부 신사업실장</h3>
+          <div class="role">데이터 결합 모객 · 신사업 사업화 · 표준상품화 리드</div>
+          <ul>
+            <li>데이터 결합 모객 신상품 사업화 리드</li>
+            <li>300개 기업 대표 대상 서밋 기획 · 운영 총괄</li>
+            <li>글로벌 테크 12개사 컨퍼런스 시리즈 수행</li>
+            <li>MICE 패키지 표준상품화 체계 설계</li>
+            <li>견적 · RSVP · 비딩 인텔리전스 시스템 구축</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -535,7 +589,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 02 DIVIDER ═══ -->
 <section class="divider alt2" id="d2">
-  <img class="dv-photo" src="assets/bg-d2.webp" alt="" loading="lazy">
+  <img class="dv-photo" src="assets/bg-d2.webp?v=2" alt="" loading="lazy">
   <div class="wrap dv-in">
     <div class="dv-txt">
       <span class="dv-kicker rv">Section 02</span>
@@ -602,7 +656,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 03 DIVIDER ═══ -->
 <section class="divider" id="d3">
-  <img class="dv-photo" src="assets/bg-d3.webp" alt="" loading="lazy" style="opacity:.5">
+  <img class="dv-photo" src="assets/bg-d3.webp?v=2" alt="" loading="lazy" style="opacity:.5">
   <div class="wrap dv-in">
     <div class="dv-txt">
       <span class="dv-kicker rv">Section 03</span>
@@ -631,21 +685,17 @@ footer a:hover { color:#fff; }
 
     <div id="pipe">
       <span class="pt rv">작동 방식 — 데이터 결합 모객 BM</span>
-      <svg class="pipe-svg" viewBox="0 0 1160 120" aria-hidden="true">
-        <defs>
-          <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#8AB4FF"/><stop offset="1" stop-color="#2962FF"/>
-          </linearGradient>
-        </defs>
-        <path id="pipe-line" d="M40 60 H1120" stroke="url(#pg)" stroke-width="2.5" fill="none"/>
-        <g id="pipe-flow"></g>
-        <g id="pipe-nodes"></g>
-      </svg>
+      <div class="stepper" aria-hidden="true">
+        <div class="st"><i>01</i><span class="fill"></span></div>
+        <div class="st"><i>02</i><span class="fill"></span></div>
+        <div class="st"><i>03</i><span class="fill"></span></div>
+        <div class="st"><i>04</i></div>
+      </div>
       <div class="pipe-cards">
-        <div class="pc rv"><h4>1 · 타겟 설계</h4><p>참석해야 할 사람을 먼저 정의합니다 — 직무 · 직급 · 산업 · 기업규모 조건으로 정밀 세팅.</p></div>
-        <div class="pc rv d1"><h4>2 · 정밀 도달</h4><p>수만 명 단위 타겟에게 앱 · 메시지 캠페인으로 직접 도달 — 불특정 홍보가 아닌 지정 타격.</p></div>
-        <div class="pc rv d2"><h4>3 · 전환 관리</h4><p>랜딩 → 등록 → RSVP 콜터치까지 단계별 전환율을 실측 · 관리 — 모집이 '기대'에서 '공정'이 됩니다.</p></div>
-        <div class="pc rv d3"><h4>4 · 성과 증명</h4><p>모객 KPI를 사전에 약속하고 달성률로 증명 — 대행비가 아니라 성과에 값을 매기는 구조.</p></div>
+        <div class="pc rv"><h4>타겟 설계</h4><p>참석해야 할 사람을 먼저 정의합니다 — 직무 · 직급 · 산업 · 기업규모 조건으로 정밀 세팅.</p></div>
+        <div class="pc rv d1"><h4>정밀 도달</h4><p>수만 명 단위 타겟에게 앱 · 메시지 캠페인으로 직접 도달 — 불특정 홍보가 아닌 지정 타격.</p></div>
+        <div class="pc rv d2"><h4>전환 관리</h4><p>랜딩 → 등록 → RSVP 콜터치까지 단계별 전환율을 실측 · 관리 — 모집이 '기대'에서 '공정'이 됩니다.</p></div>
+        <div class="pc rv d3"><h4>성과 증명</h4><p>모객 KPI를 사전에 약속하고 달성률로 증명 — 대행비가 아니라 성과에 값을 매기는 구조.</p></div>
       </div>
     </div>
 
@@ -684,7 +734,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 04 DIVIDER ═══ -->
 <section class="divider alt2" id="d4">
-  <img class="dv-photo" src="assets/bg-d4.webp" alt="" loading="lazy" style="opacity:.5">
+  <img class="dv-photo" src="assets/bg-d4.webp?v=2" alt="" loading="lazy" style="opacity:.5">
   <div class="wrap dv-in">
     <div class="dv-txt">
       <span class="dv-kicker rv">Section 04</span>
@@ -736,7 +786,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 05 DIVIDER ═══ -->
 <section class="divider" id="d5">
-  <img class="dv-photo" src="assets/bg-d5.webp" alt="" loading="lazy">
+  <img class="dv-photo" src="assets/bg-d5.webp?v=2" alt="" loading="lazy">
   <div class="wrap dv-in">
     <div class="dv-txt">
       <span class="dv-kicker rv">Section 05</span>
@@ -843,11 +893,31 @@ footer a:hover { color:#fff; }
       <div class="stack rv d1">
         <h3>역량 스택</h3>
         <div class="stk">
-          <div class="sk"><i>전략</i><div class="tags"><span>전략기획</span><span>경영전략</span><span>신사업전략</span></div></div>
-          <div class="sk"><i>사업개발</i><div class="tags"><span>사업기획</span><span>신사업개발</span><span>사업제휴</span><span>타당성검토</span></div></div>
-          <div class="sk"><i>MICE</i><div class="tags"><span>컨벤션</span><span>전시회</span><span>프로젝트관리</span></div></div>
-          <div class="sk"><i>마케팅</i><div class="tags"><span>시장분석</span><span>디지털전략</span><span>B2B마케팅</span><span>영업기획</span></div></div>
-          <div class="sk"><i>AI·시스템</i><div class="tags"><span>AI 활용 실무 시스템 구축</span><span>데이터 분석</span><span>업무 자동화 설계</span></div></div>
+          <div class="skc rv">
+            <svg class="ic" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" pathLength="1"/><path d="M31 17 27 27 17 31 21 21 Z" pathLength="1"/></svg>
+            <div><b>전략</b><span class="ev">신사업 BM 3종 설계 · MICE 패키지 표준상품 체계 운영</span>
+            <div class="tags"><span>전략기획</span><span>경영전략</span><span>신사업전략</span></div></div>
+          </div>
+          <div class="skc rv d1">
+            <svg class="ic" viewBox="0 0 48 48"><path d="M24 4c7 5 10 13 10 20l-4 9h-12l-4-9c0-7 3-15 10-20Z" pathLength="1"/><circle cx="24" cy="20" r="4" pathLength="1"/><path d="M18 37l-2 7 8-4 8 4-2-7" pathLength="1"/></svg>
+            <div><b>사업개발</b><span class="ev">자체 IP 전시 2종 0→1 런칭 · 공공 경쟁입찰 수주 6건+</span>
+            <div class="tags"><span>사업기획</span><span>신사업개발</span><span>사업제휴</span><span>타당성검토</span></div></div>
+          </div>
+          <div class="skc rv d2">
+            <svg class="ic" viewBox="0 0 48 48"><path d="M6 42h36M10 42V20h28v22" pathLength="1"/><path d="M10 20 24 8l14 12" pathLength="1"/><path d="M20 42v-10h8v10" pathLength="1"/></svg>
+            <div><b>MICE</b><span class="ev">전 영역 18년 · 소싱페어 15년 PM · 3,000명급 국제 컨퍼런스</span>
+            <div class="tags"><span>컨벤션</span><span>전시회</span><span>프로젝트관리</span></div></div>
+          </div>
+          <div class="skc rv d3">
+            <svg class="ic" viewBox="0 0 48 48"><circle cx="22" cy="26" r="16" pathLength="1"/><circle cx="22" cy="26" r="8" pathLength="1"/><path d="M22 26 40 8M34 8h6v6" pathLength="1"/></svg>
+            <div><b>마케팅</b><span class="ev">수만 명 규모 타겟 리드젠 실운영 · 모객 목표 135% 달성</span>
+            <div class="tags"><span>시장분석</span><span>디지털전략</span><span>B2B마케팅</span><span>영업기획</span></div></div>
+          </div>
+          <div class="skc rv d4">
+            <svg class="ic" viewBox="0 0 48 48"><rect x="12" y="12" width="24" height="24" rx="4" pathLength="1"/><rect x="20" y="20" width="8" height="8" pathLength="1"/><path d="M18 12V5M30 12V5M18 43v-7M30 43v-7M12 18H5M12 30H5M43 18h-7M43 30h-7" pathLength="1"/></svg>
+            <div><b>AI · 시스템</b><span class="ev">견적 · RSVP · 비딩 · 문서 자동화 4종 시스템 상시 가동</span>
+            <div class="tags"><span>AI 실무 시스템 구축</span><span>데이터 분석</span><span>업무 자동화 설계</span></div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1011,54 +1081,12 @@ footer a:hover { color:#fff; }
     flowBG(svg, JSON.parse(svg.dataset.flow));
   });
 
-  /* ---- pipeline: draw-in line, pulsing nodes, traveling packets ---- */
-  var NODES = 4;
-  var g = document.getElementById('pipe-nodes');
-  var flowG = document.getElementById('pipe-flow');
-  for (var i = 0; i < NODES; i++) {
-    var cx = 138 + i * 294.5; // centers of the four cards below (1160-wide viewBox)
-    var halo = mk('circle', { cx: cx, cy: 60, r: 14, fill: 'none', stroke: 'rgba(110,155,255,.35)', 'class': 'halo' }, g);
-    halo.style.transformOrigin = cx + 'px 60px';
-    mk('circle', { cx: cx, cy: 60, r: 7, fill: '#2962FF', stroke: '#8AB4FF', 'stroke-width': 2 }, g);
-    var num = mk('text', { x: cx, y: 34, 'text-anchor': 'middle', fill: '#8AB4FF', 'font-size': 13, 'font-weight': 800 }, g);
-    num.textContent = '0' + (i + 1);
-  }
-  var packets = [];
-  for (var pk = 0; pk < 3; pk++) {
-    packets.push({ el: mk('circle', { cy: 60, r: 3.2, fill: '#B7CDFF' }, flowG), off: pk / 3 });
-  }
-  var line = document.getElementById('pipe-line');
-  var len = line.getTotalLength();
-  line.style.strokeDasharray = len;
-  line.style.strokeDashoffset = len;
-  var pipeOn = false, pipeT = 0;
-  function pipeLoop() {
-    if (!pipeOn) return;
-    pipeT += 0.004;
-    packets.forEach(function (p) {
-      var f = (pipeT + p.off) % 1;
-      p.el.setAttribute('cx', 40 + f * 1080);
-      p.el.setAttribute('opacity', f < 0.04 ? f * 25 : f > 0.96 ? (1 - f) * 25 : 1);
-    });
-    requestAnimationFrame(pipeLoop);
-  }
+  /* ---- pipeline stepper: sequential fill when the flow scrolls in ---- */
   new IntersectionObserver(function (es) {
     es.forEach(function (e) {
-      if (e.isIntersecting) {
-        line.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(.4,0,.2,1)';
-        line.style.strokeDashoffset = 0;
-        if (!reduced) {
-          document.querySelectorAll('#pipe-nodes .halo').forEach(function (h, i) {
-            h.animate([
-              { transform: 'scale(.6)', opacity: 1 },
-              { transform: 'scale(1.8)', opacity: 0 }
-            ], { duration: 2200, iterations: Infinity, delay: i * 420, easing: 'ease-out' });
-          });
-          if (!pipeOn) { pipeOn = true; setTimeout(pipeLoop, 1400); }
-        }
-      } else { pipeOn = false; }
+      if (e.isIntersecting) document.getElementById('pipe').classList.add('go');
     });
-  }, { threshold: 0.3 }).observe(document.getElementById('pipe'));
+  }, { threshold: 0.35 }).observe(document.getElementById('pipe'));
 })();
 </script>
 </body>
