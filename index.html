@@ -67,7 +67,16 @@ section { position:relative; }
              linear-gradient(160deg, #060F20 0%, #0A2540 65%, #081C38 100%);
   color:#fff; overflow:hidden; padding:130px 0 40px;
 }
-.bgsvg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.bgsvg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; }
+.hero-media, .dv-photo {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
+}
+.hero-media { opacity:.6; }
+#hero::before {
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(90deg, rgba(6,15,32,.9) 0%, rgba(6,15,32,.62) 46%, rgba(6,15,32,.28) 100%),
+             linear-gradient(rgba(6,15,32,.42) 0%, rgba(6,15,32,.16) 55%, rgba(6,15,32,.66) 100%);
+}
 .hero-in { position:relative; z-index:2; }
 .eyebrow { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:700; letter-spacing:3px; color:var(--pale); text-transform:uppercase; }
 .eyebrow::before { content:''; width:34px; height:2px; background:var(--blue); }
@@ -100,6 +109,13 @@ section { position:relative; }
              linear-gradient(165deg, #060F20 0%, #0A2540 78%, #0A2036 100%);
 }
 .divider.alt2 { background:radial-gradient(1000px 620px at 16% 70%, #10305C 0%, transparent 60%), linear-gradient(200deg, #060F20 0%, #0A2540 78%, #081F3B 100%); }
+.divider { position:relative; }
+.dv-photo { opacity:.42; }
+.divider::before {
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(90deg, rgba(6,15,32,.9) 0%, rgba(6,15,32,.6) 46%, rgba(6,15,32,.22) 100%),
+             linear-gradient(rgba(6,15,32,.5) 0%, rgba(6,15,32,.12) 50%, rgba(6,15,32,.55) 100%);
+}
 .dv-in { position:relative; z-index:2; width:100%; display:flex; align-items:center; justify-content:space-between; gap:40px; }
 .dv-kicker { display:inline-flex; align-items:center; gap:12px; font-size:13.5px; font-weight:800; letter-spacing:4px; color:var(--pale); text-transform:uppercase; }
 .dv-kicker::before { content:''; width:38px; height:2px; background:var(--blue); }
@@ -377,6 +393,10 @@ footer a:hover { color:#fff; }
 
 <!-- ═══════════ HERO ═══════════ -->
 <section id="hero">
+  <video class="hero-media" autoplay muted loop playsinline preload="metadata"
+         poster="assets/bg-hero.webp" aria-hidden="true">
+    <source src="assets/hero-loop.mp4" type="video/mp4">
+  </video>
   <svg class="bgsvg" data-flow='{"count":9,"top":0.42,"span":0.55,"stroke":"rgba(110,155,255,.5)","op0":0.04,"opSpread":0.22,"dots":1}' aria-hidden="true"></svg>
   <div class="wrap hero-in">
     <span class="eyebrow rv">MICE Strategist Portfolio · 2026</span>
@@ -399,6 +419,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 01 DIVIDER ═══ -->
 <section class="divider" id="d1" data-motif="orbits">
+  <img class="dv-photo" src="assets/bg-d1.webp" alt="" loading="lazy">
   <svg class="bgsvg" aria-hidden="true"></svg>
   <div class="wrap dv-in">
     <div class="dv-txt">
@@ -581,6 +602,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 03 DIVIDER ═══ -->
 <section class="divider" id="d3" data-motif="converge">
+  <img class="dv-photo" src="assets/bg-d3.webp" alt="" loading="lazy" style="opacity:.34">
   <svg class="bgsvg" aria-hidden="true"></svg>
   <div class="wrap dv-in">
     <div class="dv-txt">
@@ -663,6 +685,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 04 DIVIDER ═══ -->
 <section class="divider alt2" id="d4" data-motif="circuit">
+  <img class="dv-photo" src="assets/bg-d4.webp" alt="" loading="lazy" style="opacity:.3">
   <svg class="bgsvg" aria-hidden="true"></svg>
   <div class="wrap dv-in">
     <div class="dv-txt">
@@ -715,6 +738,7 @@ footer a:hover { color:#fff; }
 
 <!-- ═══ SECTION 05 DIVIDER ═══ -->
 <section class="divider" id="d5" data-motif="rise">
+  <img class="dv-photo" src="assets/bg-d5.webp" alt="" loading="lazy">
   <svg class="bgsvg" aria-hidden="true"></svg>
   <div class="wrap dv-in">
     <div class="dv-txt">
@@ -862,6 +886,10 @@ footer a:hover { color:#fff; }
 (function () {
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var svgNS = 'http://www.w3.org/2000/svg';
+
+  /* ---- hero background video: poster-only when motion is reduced ---- */
+  var hv = document.querySelector('.hero-media');
+  if (hv && reduced) { hv.removeAttribute('autoplay'); hv.pause && hv.pause(); }
 
   /* ---- nav / progress ---- */
   var nav = document.getElementById('nav');
