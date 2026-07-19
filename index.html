@@ -251,7 +251,44 @@ section { position:relative; }
 #pipe.go .st:nth-child(2) i { transition-delay:.8s } #pipe.go .st:nth-child(2) .fill { transition-delay:1.1s }
 #pipe.go .st:nth-child(3) i { transition-delay:1.5s } #pipe.go .st:nth-child(3) .fill { transition-delay:1.8s }
 #pipe.go .st:nth-child(4) i { transition-delay:2.2s }
+/* endless comet traveling the connectors after the initial fill */
+.st .fill::after {
+  content:''; position:absolute; top:-2px; left:-8%; width:36px; height:6px; border-radius:4px;
+  background:linear-gradient(90deg, transparent, #CFE0FF 45%, #fff 55%, transparent); opacity:0;
+}
+@keyframes comet {
+  0% { left:-8%; opacity:0 } 6% { opacity:1 }
+  30% { left:calc(100% - 28px); opacity:1 } 36% { left:calc(100% - 20px); opacity:0 }
+  100% { left:calc(100% - 20px); opacity:0 }
+}
+#pipe.go .st:nth-child(1) .fill::after { animation:comet 4.2s linear 3s infinite; }
+#pipe.go .st:nth-child(2) .fill::after { animation:comet 4.2s linear 4.26s infinite; }
+#pipe.go .st:nth-child(3) .fill::after { animation:comet 4.2s linear 5.52s infinite; }
+/* tick linking each node down to its card */
+.st i::after {
+  content:''; position:absolute; top:calc(100% + 4px); left:50%; margin-left:-1px;
+  width:2px; height:16px; background:linear-gradient(rgba(41,98,255,.6), transparent);
+  opacity:0; transition:opacity .5s ease 2.4s;
+}
+#pipe.go .st i::after { opacity:1; }
 .pipe-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.pc { border-top:3px solid rgba(138,180,255,.22); }
+.pc .n {
+  display:inline-grid; place-items:center; width:30px; height:30px; border-radius:9px;
+  font-style:normal; font-size:12px; font-weight:800; margin-bottom:12px;
+  background:rgba(110,155,255,.14); color:var(--pale);
+}
+.pc.p2 { border-top-color:rgba(138,180,255,.42); background:rgba(255,255,255,.06); }
+.pc.p2 .n { background:rgba(110,155,255,.26); }
+.pc.p3 { border-top-color:rgba(110,155,255,.68); background:rgba(255,255,255,.075); }
+.pc.p3 .n { background:rgba(41,98,255,.5); color:#fff; }
+.pc.p4 {
+  border-top-color:var(--pale); border-color:rgba(110,155,255,.5);
+  background:linear-gradient(155deg, rgba(41,98,255,.34), rgba(41,98,255,.1));
+}
+.pc.p4 .n { background:var(--blue); color:#fff; box-shadow:0 4px 14px rgba(41,98,255,.5); }
+.pc.p4 h4 { color:#fff; }
+.pc.p4 p { color:#C9D6F2; }
 .pc { position:relative; background:rgba(255,255,255,.045); border:1px solid rgba(138,180,255,.16); border-radius:14px; padding:22px; transition:background .25s, border-color .25s, transform .25s; }
 .pc:hover { background:rgba(255,255,255,.08); border-color:rgba(138,180,255,.4); transform:translateY(-4px); }
 .pc h4 { font-size:17px; font-weight:800; }
@@ -352,13 +389,14 @@ section { position:relative; }
 .bm .d90 i { font-style:normal; display:block; font-size:11px; font-weight:800; letter-spacing:1.5px; color:var(--pale); margin-bottom:4px; }
 
 /* ---------- credentials ---------- */
-.cred { display:grid; grid-template-columns:1fr 1fr; gap:44px; margin-top:56px; }
-.cr { display:grid; grid-template-columns:86px 1fr; gap:16px; padding:16px 0; border-bottom:1px solid var(--line); align-items:baseline; }
-.cr:first-child { padding-top:0; }
-.cr i { font-style:normal; font-size:15px; font-weight:800; color:var(--blue); }
-.cr p { font-size:15px; line-height:1.6; }
-.stack h3 { font-size:16px; font-weight:800; letter-spacing:1px; color:var(--navy); }
-.stk { margin-top:18px; display:grid; gap:12px; }
+.cred-band { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:48px; }
+.cb { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; transition:transform .2s, border-color .2s, box-shadow .2s; }
+.cb:hover { transform:translateY(-3px); border-color:#CBD8F2; box-shadow:0 10px 26px rgba(10,37,64,.08); }
+.cb i { font-style:normal; font-size:11.5px; font-weight:800; letter-spacing:2px; color:var(--blue); text-transform:uppercase; }
+.cb p { margin-top:6px; font-size:13.5px; line-height:1.55; color:var(--txt); }
+.stack-h { margin-top:56px; font-size:16px; font-weight:800; letter-spacing:1px; color:var(--navy); }
+.stk { margin-top:18px; display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.skc:last-child { grid-column:1 / -1; border-color:rgba(41,98,255,.45); background:linear-gradient(135deg,#F4F7FF,#fff); }
 .skc {
   display:flex; gap:18px; align-items:flex-start; background:#fff; border:1px solid var(--line);
   border-radius:14px; padding:18px 20px; transition:transform .22s, box-shadow .22s, border-color .22s;
@@ -395,7 +433,7 @@ footer a:hover { color:#fff; }
   .sy { grid-template-columns:1fr; }
   .sy .cell { border-left:0; border-top:1px solid var(--line); padding-left:24px; }
   .sy .cell::before { left:24px; top:-11px; margin-top:0; transform:rotate(90deg); }
-  .cred { grid-template-columns:1fr; }
+  .cred-band { grid-template-columns:repeat(3,1fr); }
 }
 @media (max-width:680px) {
   .sec { padding:80px 0; }
@@ -417,6 +455,7 @@ footer a:hover { color:#fff; }
   .c-grid { grid-template-columns:1fr; }
   .stepper { display:none; }
   .now-card { padding:22px 20px 20px; }
+  .cred-band, .stk { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -692,10 +731,10 @@ footer a:hover { color:#fff; }
         <div class="st"><i>04</i></div>
       </div>
       <div class="pipe-cards">
-        <div class="pc rv"><h4>타겟 설계</h4><p>참석해야 할 사람을 먼저 정의합니다 — 직무 · 직급 · 산업 · 기업규모 조건으로 정밀 세팅.</p></div>
-        <div class="pc rv d1"><h4>정밀 도달</h4><p>수만 명 단위 타겟에게 앱 · 메시지 캠페인으로 직접 도달 — 불특정 홍보가 아닌 지정 타격.</p></div>
-        <div class="pc rv d2"><h4>전환 관리</h4><p>랜딩 → 등록 → RSVP 콜터치까지 단계별 전환율을 실측 · 관리 — 모집이 '기대'에서 '공정'이 됩니다.</p></div>
-        <div class="pc rv d3"><h4>성과 증명</h4><p>모객 KPI를 사전에 약속하고 달성률로 증명 — 대행비가 아니라 성과에 값을 매기는 구조.</p></div>
+        <div class="pc p1 rv"><i class="n">01</i><h4>타겟 설계</h4><p>참석해야 할 사람을 먼저 정의합니다 — 직무 · 직급 · 산업 · 기업규모 조건으로 정밀 세팅.</p></div>
+        <div class="pc p2 rv d1"><i class="n">02</i><h4>정밀 도달</h4><p>수만 명 단위 타겟에게 앱 · 메시지 캠페인으로 직접 도달 — 불특정 홍보가 아닌 지정 타격.</p></div>
+        <div class="pc p3 rv d2"><i class="n">03</i><h4>전환 관리</h4><p>랜딩 → 등록 → RSVP 콜터치까지 단계별 전환율을 실측 · 관리 — 모집이 '기대'에서 '공정'이 됩니다.</p></div>
+        <div class="pc p4 rv d3"><i class="n">04</i><h4>성과 증명</h4><p>모객 KPI를 사전에 약속하고 달성률로 증명 — 대행비가 아니라 성과에 값을 매기는 구조.</p></div>
       </div>
     </div>
 
@@ -882,17 +921,15 @@ footer a:hover { color:#fff; }
       <span class="kicker rv">05 · Credentials</span>
       <h2 class="rv d1">학력 · 자격 · 역량.</h2>
     </div>
-    <div class="cred">
-      <div class="rows rv">
-        <div class="cr"><i>석사</i><p>한림국제대학원 컨벤션이벤트경영 수료</p></div>
-        <div class="cr"><i>학사</i><p>한림대학교 경영학 · 컨벤션학 복수전공</p></div>
-        <div class="cr"><i>자격</i><p>CEM — 국제 공인 전시경영 자격</p></div>
-        <div class="cr"><i>수상</i><p>전국 대학생 컨벤션 유치제안 대회 최우수상</p></div>
-        <div class="cr"><i>어학</i><p>영어 — 업무상 소통 가능 · 글로벌 본사 12개사 커뮤니케이션 수행</p></div>
-      </div>
-      <div class="stack rv d1">
-        <h3>역량 스택</h3>
-        <div class="stk">
+    <div class="cred-band">
+      <div class="cb rv"><i>석사</i><p>한림국제대학원 컨벤션이벤트경영 수료</p></div>
+      <div class="cb rv d1"><i>학사</i><p>한림대학교 경영학 · 컨벤션학 복수전공</p></div>
+      <div class="cb rv d2"><i>자격</i><p>CEM — 국제 공인 전시경영 자격</p></div>
+      <div class="cb rv d3"><i>수상</i><p>전국 대학생 컨벤션 유치제안 대회 최우수상</p></div>
+      <div class="cb rv d4"><i>어학</i><p>영어 — 글로벌 본사 12개사 커뮤니케이션 수행</p></div>
+    </div>
+    <h3 class="stack-h rv">역량 스택</h3>
+    <div class="stk">
           <div class="skc rv">
             <svg class="ic" viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" pathLength="1"/><path d="M31 17 27 27 17 31 21 21 Z" pathLength="1"/></svg>
             <div><b>전략</b><span class="ev">신사업 BM 3종 설계 · MICE 패키지 표준상품 체계 운영</span>
@@ -918,8 +955,6 @@ footer a:hover { color:#fff; }
             <div><b>AI · 시스템</b><span class="ev">견적 · RSVP · 비딩 · 문서 자동화 4종 시스템 상시 가동</span>
             <div class="tags"><span>AI 실무 시스템 구축</span><span>데이터 분석</span><span>업무 자동화 설계</span></div></div>
           </div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
